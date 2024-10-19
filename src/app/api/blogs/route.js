@@ -4,10 +4,10 @@ import { connectDB } from "@/app/lib/dbConnection";
 
 export async function GET(request){
     await connectDB();
-    const blogs = BlogModel.find();
-    console.log("Blogs from DB ->", blogs)
+    const blogs = await BlogModel.find();
+    // console.log("Blogs from DB ->", blogs)
     return Response.json({
-        data: blogs,
+        blogs,
         msg: "Blogs fetched Successfully",
     })
 }
@@ -16,9 +16,13 @@ export async function GET(request){
 export async function POST(request){
     await connectDB();
     const blog = request.json()
-    console.log("Blog from DB ->", blog)
+
+    const blogAdded = await new BlogModel({...blog})
+    await blogAdded.save();
+
+    console.log("Blogs Added ->", blogAdded)
     return Response.json({
-        data: blog,
-        msg: "Blogs fetched Successfully",
+        data: blogAdded,
+        msg: "Blogs Added Successfully",
     })
 }
